@@ -1,6 +1,9 @@
 import joi from 'joi';
 
 const  propertyEditValidator = async (req, res, next) => {
+    const photos = []
+    req.files.filter( element => photos.push(element.path));
+    req.body.photos = photos;
 
    const propertySchema = joi.object({
     street: joi.string().empty().required() ,
@@ -13,8 +16,8 @@ const  propertyEditValidator = async (req, res, next) => {
     typeOffer: joi.string().empty().required(),
     price: joi.number().integer().required(),
     description:joi.string().empty().required() ,
-    numBedrooms: joi.integer().required(),
-    photos:joi.any().required(),
+    numBedrooms: joi.string().required(),
+    photos:joi.any(),
   });
 
   try {

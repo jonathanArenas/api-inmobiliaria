@@ -56,10 +56,14 @@ const propertySchema = new mongoose.Schema({
         required: true,
     },
     message:{
-        type: mongoose.Schema.Types.ObjectId,
+        type: [mongoose.Schema.Types.ObjectId],
         ref: 'Message',
         required: false,
-    }
+    },
+    isDeleted: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 export default mongoose.model('Property', propertySchema);

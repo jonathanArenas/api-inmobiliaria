@@ -3,6 +3,7 @@ import morgan from 'morgan';
 import propertyRouter from './routes/propertyRoutes.js';
 import authRouter from  './routes/authRoutes.js'
 import userRouter from './routes/userRoutes.js'
+import offerRoutes from './routes/offerRoutes.js'
 
 const api = express();
 
@@ -20,7 +21,8 @@ api.get('/status', (_, res) => {
 
 api.use('/auth', authRouter);
 api.use('/users', userRouter);
-api.use('/property', propertyRouter)
+api.use('/properties', propertyRouter)
+api.use('/message', offerRoutes)
 
 
 export default api;
