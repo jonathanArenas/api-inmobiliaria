@@ -16,7 +16,7 @@ const create = async(req, res) =>{
       html: `
       <h2>Hello ${property.user.firstName}</h2>
       <h3>Check the message your property </h3>
-      <a href=${config.server.url}/message/${message._id}/> Click here</a>
+      <a href=${config.server.url}/message/${message._id}/property/${property._id}/> Click here</a>
       `,
     };
 
@@ -37,21 +37,23 @@ const create = async(req, res) =>{
 
 //leer el message
 const read = async (req, res) => {
-  const { idMessage } = req.params.id;
+  const  idMessage  = req.params.id;
   const userId = req.user.id;
   try {
-    const message = await Property.findOne({ user: userId },{message:1}).populate({
-      path : 'message',
-      match : {_id: idMessage}
-    }
+    const messaged = await Property.find(
+      {  
+        user: userId,
+        message: { $elemMatch : { $in : idMessage }}
+      },
     );
+    const message = await Message.findById(idMessage);
     return res.json({
       msg: 'Request Okay',
       message: message,
     });
   } catch (error) {
     return res.status(500).json({
-      msg: 'Error al buscar items',
+      msg: 'Error to query message',
       error,
     });
   }
@@ -60,30 +62,42 @@ const read = async (req, res) => {
 
 
 const remove = async (req, res) =>{
-  const {id} = req.params;
+  const  idMessage  = req.params.id;
+  const userId = req.user.id;
   try{
-    const user = await User.findByIdAndUpdate(id,{isDeleted: true,}, {new: true,});
+    const messaged = await Property.find(
+      {  
+        user: userId,
+        message: { $elemMatch : { $in : idMessage }}
+      },
+      );
+    const message = await Message.findByIdAndUpdate(id,{isDeleted: true,}, {new: true,});
     return res.json({
-      msg: 'User deleted suscefully'
+      msg: 'Message deleted suscefully'
     })
   }catch(error){
     return res.json({
-      msg: 'Error to deleted user',
+      msg: 'Error to deleted Message',
       error,
     })
   }
 }
 //leer todos los usuarios solo ADMIN
 const list = async (req, res) =>{
- 
+  const userId = req.user.id;
+  const {id} = req.body;
   try{
-    const users= await User.find({isDeleted: false});
+    const messages = await Property.findById(id,
+     {
+        message: 1
+      }
+    ).populate('message');
     return res.json({
-      users: users
+      message: messages 
     })
   }catch(error){
     return res.json({
-      msg: 'Error to query users',
+      msg: 'Error to query',
       error,
     })
   }
@@ -92,4 +106,4 @@ const list = async (req, res) =>{
 
 
 
-export { create, read};
+export { create, read, list};

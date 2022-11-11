@@ -5,7 +5,7 @@ import { authValidator } from '../middlewares/authValidator.js';
 const router = express.Router();
 //all
 
-router.route('/property/:id').post(offerController.create);
-router.route('/:id').get(authValidator, offerController.read);
+router.route('/property/:id').post(offerController.create).get(authValidator, offerController.list);
+router.route('/:id').get(authValidator, offerController.read)
 
 export default router;
